@@ -24,7 +24,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void create(User user) {
 		
-		userRepository.save(user);
+		 User savedUser = userRepository.save(user);
+		   System.out.println(savedUser);
+		    System.out.println(savedUser.getAddress());
 	}
 
 	@Override
