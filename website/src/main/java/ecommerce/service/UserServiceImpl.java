@@ -2,14 +2,9 @@ package ecommerce.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import ecommerce.dto.AddressDto;
-import ecommerce.dto.UserRequest;
-import ecommerce.dto.UserResponse;
-import ecommerce.model.Address;
 import ecommerce.model.User;
 import ecommerce.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,42 +17,23 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 
 	@Override
-	public List<UserResponse> fetchAllUsers() {
-		return userRepository.findAll().stream().map(this::mapToUserResponse).collect(Collectors.toList());
+	public List<User> fetchAllUsers() {
+		return userRepository.findAll();
 	}
 
 	@Override
-	public void create(UserRequest userrequest) {
+	public void create(User user) {
 		
-		 User user = new User();
-		 updateUserFromRequest(user,userrequest);
-		 userRepository.save(user);
-		   
-	}
-
-	private void updateUserFromRequest(User user, UserRequest userrequest) {
-		// TODO Auto-generated method stub
-	   user.setFirstName(userrequest.getFirstName());
-       user.setLastName(userrequest.getLastName());
-       user.setEmail(userrequest.getEmail());
-       user.setPhone(userrequest.getPhone());
-       if(userrequest.getAddress() != null) {
-    	   Address address =  new Address();
-    	   address.setStreet(userrequest.getAddress().getStreet());
-    	   address.setCity(userrequest.getAddress().getCity());
-    	   address.setCountry(userrequest.getAddress().getCountry());
-    	   address.setZipcode(userrequest.getAddress().getZipcode());
-			user.setAddress(address);
-			
-    	   
-       }
-		
+		 User savedUser = userRepository.save(user);
+		   System.out.println(savedUser);
+		    System.out.println(savedUser.getAddress());
 	}
 
 	@Override
-	public Optional<UserResponse> fetchUserById(Long id) {
+	public Optional<User> fetchUserById(Long id) {
 		// TODO Auto-generated method stub
-		return userRepository.findById(id).map(this::mapToUserResponse);
+		userRepository.findById(id);
+		return userRepository.findById(id);
 	
 		/*
 		 * return userList.stream().filter(user ->
@@ -67,35 +43,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean editUserById(Long id, UserRequest updatedUser) {
+	public boolean editUserById(Long id, User updatedUser) {
 		// TODO Auto-generated method stub
 		return userRepository.findById(id) .map(existingUser -> {
-			updateUserFromRequest(existingUser,updatedUser);
+			existingUser.setFirstName(updatedUser.getFirstName());
+			existingUser.setLastName(updatedUser.getLastName());
 			userRepository.save(existingUser);
 			return true;
 
 		}).orElse(false);
 	}
-	
-	private UserResponse mapToUserResponse(User user) {
-		UserResponse userresponse = new UserResponse();
-		userresponse.setId(String.valueOf(user.getId()));
-		userresponse.setFirstName(user.getFirstName());
-		userresponse.setLastName(user.getLastName());
-		userresponse.setEmail(user.getEmail());
-		userresponse.setPhone(user.getPhone());
-		userresponse.setRole(user.getRole());
-		if(user.getAddress() != null) {
-			AddressDto addressDto =  new AddressDto();
-			addressDto.setStreet(user.getAddress().getStreet());
-			addressDto.setCity(user.getAddress().getCity());
-			addressDto.setCountry(user.getAddress().getCountry());
-			addressDto.setZipcode(user.getAddress().getZipcode());
-			userresponse.setAddress(addressDto);
-		}
-		return userresponse;
-	}
-
-	
-	
 }
