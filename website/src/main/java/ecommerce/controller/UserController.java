@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.dto.UserRequest;
-import ecommerce.dto.UserResponse;
+import ecommerce.model.User;
 import ecommerce.service.UserService;
 
 @RestController
@@ -24,26 +23,26 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping("/api/users")
-	public ResponseEntity<List<UserResponse>> getAllUsers() {
+	public ResponseEntity<List<User>> getAllUsers() {
 		return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
 	}
 
 	@PostMapping("/api/users/create")
-	public ResponseEntity<String> createUsers(@RequestBody UserRequest userrequest) {
-		System.out.println("User = " + userrequest);
-		System.out.println("Address = " + userrequest.getAddress());
+	public ResponseEntity<String> createUsers(@RequestBody User user) {
+	    System.out.println("User = " + user);
+	    System.out.println("Address = " + user.getAddress());
 
-		userService.create(userrequest);
+		userService.create(user);
 		return ResponseEntity.status(HttpStatus.CREATED).body("User added sucessFully.");
 	}
 
 	@GetMapping("/api/users/{id}")
-	public Optional<UserResponse> checkUser(@PathVariable Long id) {
+	public Optional<User> checkUser(@PathVariable Long id) {
 		return userService.fetchUserById(id);
 	}
 
 	@PutMapping("/api/users/{id}")
-	public ResponseEntity<String> editUser(@PathVariable Long id, @RequestBody UserRequest updatedUser) {
+	public ResponseEntity<String> editUser(@PathVariable Long id, @RequestBody User updatedUser) {
 		boolean updated = userService.editUserById(id, updatedUser);
 		if (updated)
 			return ResponseEntity.status(HttpStatus.OK).body("User updated sucessFully.");
