@@ -1,21 +1,66 @@
 package ecommerce.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import ecommerce.dto.ProductResponse;
 import ecommerce.dto.ProductResquest;
+import ecommerce.model.Product;
 import ecommerce.repo.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 
 	@Override
 	public ProductResponse create(ProductResquest productrequest) {
 		// TODO Auto-generated method stub
-		return null;
+		Product product = new Product();
+		updateProductfromRequest(product, productrequest);
+		Product savedProduct = productRepository.save(product);
+
+		return mapToProductResponse(savedProduct);
+	}
+
+	private ProductResponse mapToProductResponse(Product savedProduct) {
+		// TODO Auto-generated method stub
+		ProductResponse response = new ProductResponse();
+		response.setId(String.valueOf(savedProduct.getId()));
+		response.setCategory(savedProduct.getCategory());
+		response.setDescription(savedProduct.getDescription());
+		response.setName(savedProduct.getName());
+		response.setPrice(savedProduct.getPrice());
+		response.setImageUrl(savedProduct.getImageUrl());
+		response.setActive(savedProduct.getActive());
+		response.setStockQuantity(savedProduct.getStockQuantity());
+		return response;
+	}
+
+	private void updateProductfromRequest(Product product, ProductResquest productrequest) {
+		// TODO Auto-generated method stub
+		product.setCategory(productrequest.getCategory());
+		product.setDescription(productrequest.getDescription());
+		product.setName(productrequest.getName());
+		product.setPrice(productrequest.getPrice());
+		product.setImageUrl(productrequest.getImageUrl());
+		product.setStockQuantity(productrequest.getStockQuantity());
+
+	}
+
+	@Override
+	public Optional<ProductResponse> updateProduct(Long id, ProductResquest productrequest) {
+		// TODO Auto-generated method stub
+
+		return productRepository.findById(id).map(existingProduct -> {
+			updateProductfromRequest(existingProduct, productrequest);
+			 Product savedProduct = productRepository.save(existingProduct);
+
+             return mapToProductResponse(savedProduct);
+		});
+
 	}
 }
