@@ -20,22 +20,19 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
-	
-	@PostMapping
-	public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductResquest productrequest){
-		
-		 return ResponseEntity.status(HttpStatus.CREATED)
-		            .body(productService.create(productrequest));
-		
-	}
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<ProductResponse> updateProduct(
-	        @PathVariable Long id,
-	        @RequestBody ProductResquest productrequest) {
 
-	    return productService.updateProduct(id, productrequest)
-	            .map(ResponseEntity::ok)
-	            .orElseGet(() -> ResponseEntity.notFound().build());
+	@PostMapping
+	public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductResquest productrequest) {
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(productrequest));
+
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
+			@RequestBody ProductResquest productrequest) {
+
+		return productService.updateProduct(id, productrequest).map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 }

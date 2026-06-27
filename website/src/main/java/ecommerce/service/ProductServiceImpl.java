@@ -57,9 +57,9 @@ public class ProductServiceImpl implements ProductService {
 
 		return productRepository.findById(id).map(existingProduct -> {
 			updateProductfromRequest(existingProduct, productrequest);
-			 Product savedProduct = productRepository.save(existingProduct);
+			Product savedProduct = productRepository.save(existingProduct);
 
-             return mapToProductResponse(savedProduct);
+			return mapToProductResponse(savedProduct);
 		});
 
 	}
