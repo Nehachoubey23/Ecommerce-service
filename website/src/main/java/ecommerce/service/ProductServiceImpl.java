@@ -1,6 +1,8 @@
 package ecommerce.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -62,5 +64,28 @@ public class ProductServiceImpl implements ProductService {
 			return mapToProductResponse(savedProduct);
 		});
 
+	}
+
+	@Override
+	public List<ProductResponse> fetchAllProducts() {
+		// TODO Auto-generated method stub
+		return productRepository.findByActiveTrue().stream().map(this::mapToProductResponse).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean DeletedProducts(Long id) {
+		// TODO Auto-generated method stub
+		return productRepository.findById(id).map(product -> {
+			product.setActive(false);
+			productRepository.save(product);
+			return true;
+		}).orElse(false);
+		
+	}
+
+	@Override
+	public List<ProductResponse> searchProducts(String keyword) {
+		// TODO Auto-generated method stub
+		return productRepository.searchProducts(keyword).stream().map(this::mapToProductResponse) .collect(Collectors.toList());
 	}
 }

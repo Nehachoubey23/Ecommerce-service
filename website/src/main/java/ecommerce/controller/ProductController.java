@@ -1,12 +1,17 @@
 package ecommerce.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.dto.ProductResponse;
@@ -34,5 +39,25 @@ public class ProductController {
 
 		return productService.updateProduct(id, productrequest).map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+	@GetMapping
+	public ResponseEntity<List<ProductResponse>> fetchProducts() {
+
+		return ResponseEntity.ok(productService.fetchAllProducts());
+
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> DeleteProduct(@PathVariable Long id) {
+
+		boolean isDeleted = productService.DeletedProducts(id);
+
+		return isDeleted ? ResponseEntity.noContent().build(): ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<ProductResponse>> DeleteProduct(@RequestParam  String keyword) {
+       return  ResponseEntity.ok(productService.searchProducts(keyword));
 	}
 }
