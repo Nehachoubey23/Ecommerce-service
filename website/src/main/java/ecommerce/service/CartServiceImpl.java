@@ -84,4 +84,11 @@ public class CartServiceImpl implements CartService {
 				.map(cartItemRepository::findByUser).orElseGet(List::of);
 
 	}
+
+	@Override
+	public void clearCart(String userId) {
+		// TODO Auto-generated method stub
+		 userRepository.findById(Long.valueOf(userId)).ifPresent(
+		 cartItemRepository::deleteByUser);
+	}
 }

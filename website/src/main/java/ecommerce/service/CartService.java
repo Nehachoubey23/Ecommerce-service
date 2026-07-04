@@ -13,4 +13,6 @@ public interface CartService {
 
 	List<CartItem> fetchAllCarts(String userId);
 
+	public void clearCart(String userId);
+
 }
