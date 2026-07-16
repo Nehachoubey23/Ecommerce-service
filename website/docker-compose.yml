@@ -1,0 +1,50 @@
+
+
+#----http://127.0.0.1:61290/?code=7f9d4664e022c41ee892&state=85a9ae37a80f4e20a5d896b817fb1d1a
+
+
+#docker run -d --name pgadmin --network mynetwork -e PGADMIN_DEFAULT_EMAIL=nehachoubey@gmail.com -e PGADMIN_DEFAULT_PASSWORD=root123 dpage/pgadmin4
+
+#docker run -d --name db --network mynetwork -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-container
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root123
+      POSTGRES_DB: ecom_schema
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - postgres-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-container
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: nehachoubeyggn@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+
+networks:
+  postgres-network:
+    driver: bridge
